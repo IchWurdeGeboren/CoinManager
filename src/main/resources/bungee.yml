@@ -1,0 +1,4 @@
+name: CoinManager
+version: 1.0
+main: de.ichwurdegeboren.coinmanager.main.BungeeCoinManagerPlugin
+author: IchWurdeGeboren

@@ -1,0 +1,16 @@
+name: CoinManager
+version: 1.0
+main: de.ichwurdegeboren.coinmanager.main.SpigotCoinManagerPlugin
+author: IchWurdeGeboren
+
+commands:
+  addmoney:
+  removemoney:
+  setmoney:
+  money:
+    aliases:
+      - balance
+      - bal
+      - coins
+  pay:
+
