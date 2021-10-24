@@ -31,6 +31,7 @@ public class CoinUserManager implements ICoinsManager {
             try {
                 if (rs.next())
                     return new CoinUser(main, uuid, rs.getLong("COINS"));
+                rs.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -72,6 +73,7 @@ public class CoinUserManager implements ICoinsManager {
                 ps.setString(1, uuid.toString());
                 ps.setDouble(2, 0);
                 ps.execute();
+                ps.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

@@ -67,11 +67,13 @@ public class MySQL {
         try {
             PreparedStatement ps = con.prepareStatement(qry);
             ps.execute();
+            ps.closeOnCompletion();
             rs = ps.getResultSet();
+            return rs;
         } catch (SQLException e) {
             System.err.println(e);
         }
-        return rs;
+        return null;
     }
 
     public Connection getCon() {

@@ -75,9 +75,8 @@ public class BungeeCoinManagerPlugin extends Plugin implements Main {
     }
 
     @Override
-    public boolean callCoinsUpdateEvent(ICoinsUser iCoinsUser, double newAmount, double oldAmount, ChangeCause changeCause) {
+    public void callCoinsUpdateEvent(ICoinsUser iCoinsUser, double newAmount, double oldAmount, ChangeCause changeCause) {
         BungeeCoinsUserUpdateEvent event = new BungeeCoinsUserUpdateEvent(iCoinsUser, newAmount, oldAmount, changeCause);
         getProxy().getPluginManager().callEvent(event);
-        return event.isCancelled();
     }
 }

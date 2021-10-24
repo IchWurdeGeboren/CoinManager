@@ -75,9 +75,11 @@ public class SpigotCoinManagerPlugin extends JavaPlugin implements Main {
     }
 
     @Override
-    public boolean callCoinsUpdateEvent(ICoinsUser iCoinsUser, double newAmount, double oldAmount, ChangeCause changeCause) {
+    public void callCoinsUpdateEvent(ICoinsUser iCoinsUser, double newAmount, double oldAmount, ChangeCause changeCause) {
         BukkitCoinsUserUpdateEvent event = new BukkitCoinsUserUpdateEvent(iCoinsUser, newAmount, oldAmount, changeCause);
-        getServer().getPluginManager().callEvent(event);
-        return event.isCancelled();
+        getServer().getScheduler().callSyncMethod(this, () -> {
+            getServer().getPluginManager().callEvent(event);
+            return null;
+        });
     }
 }

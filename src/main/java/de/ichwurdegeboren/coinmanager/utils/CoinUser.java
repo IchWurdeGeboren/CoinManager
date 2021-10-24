@@ -3,6 +3,7 @@ package de.ichwurdegeboren.coinmanager.utils;
 import de.ichwurdegeboren.coinmanager.api.ICoinsUser;
 import de.ichwurdegeboren.coinmanager.api.ChangeCause;
 import de.ichwurdegeboren.coinmanager.main.Main;
+import org.bukkit.Bukkit;
 
 import java.util.UUID;
 
@@ -36,19 +37,19 @@ public class CoinUser implements ICoinsUser {
 
     @Override
     public void addCoins(double coins) {
-        if (main.callCoinsUpdateEvent(this, this.coins + coins, coins, ChangeCause.ADD)) return;
+        main.callCoinsUpdateEvent(this, this.coins + coins, coins, ChangeCause.ADD);
         this.coins += coins;
     }
 
     @Override
     public void removeCoins(double coins) {
-        if (main.callCoinsUpdateEvent(this, this.coins - coins, coins, ChangeCause.REMOVE)) return;
+        main.callCoinsUpdateEvent(this, this.coins - coins, coins, ChangeCause.REMOVE);
         this.coins -= coins;
     }
 
     @Override
     public void setCoins(double coins) {
-        if (main.callCoinsUpdateEvent(this, this.coins, coins, ChangeCause.SET)) return;
+        main.callCoinsUpdateEvent(this, coins, this.coins, ChangeCause.SET);
         this.coins = coins;
     }
 }

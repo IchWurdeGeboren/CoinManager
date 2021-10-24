@@ -20,5 +20,5 @@ public interface Main {
 
     ConfigObject getConfigObject();
 
-    boolean callCoinsUpdateEvent(ICoinsUser iCoinsUser, double newAmount, double oldAmount, ChangeCause changeCause);
+    void callCoinsUpdateEvent(ICoinsUser iCoinsUser, double newAmount, double oldAmount, ChangeCause changeCause);
 }
