@@ -41,13 +41,19 @@ public class SetMoneyCommand extends Command {
                     player.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Bitte benutze: /setmoney <Spieler> <Betrag>"));
                     return;
                 }
+                if (amount < 0.01 && amount != 0) {
+                    player.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Der angegebene Geldbetrag ist zu klein."));
+                    return;
+                }
                 final double finalAmount = amount;
 
                 main.getCoinUserManager().getCoinsUser(target.getUniqueId()).thenAccept(coinUser -> {
-                    coinUser.setCoins(finalAmount);
-                    main.getCoinUserManager().saveCoinsUser(coinUser);
-                    target.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Dir wurden §b" + finalAmount + "€ §gesetzt."));
-                    player.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Du hast §b" + target.getName() + " " + finalAmount + "€ §gesetzt."));
+                    coinUser.setCoins(finalAmount).thenAccept(bool -> {
+                        if (!bool) return;
+                        main.getCoinUserManager().saveCoinsUser(coinUser);
+                        target.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Dir wurden §b" + finalAmount + "€ §gesetzt."));
+                        player.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Du hast §b" + target.getName() + " " + finalAmount + "€ §gesetzt."));
+                    });
                 });
             } else
                 player.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Bitte benutze: /setmoney <Spieler> <Betrag>"));

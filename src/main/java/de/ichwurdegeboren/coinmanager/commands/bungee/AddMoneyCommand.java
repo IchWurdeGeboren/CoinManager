@@ -45,13 +45,18 @@ public class AddMoneyCommand extends Command {
                     player.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Bitte gib nur positive Geldbeträge an."));
                     return;
                 }
+                if(amount < 0.01) {
+                    player.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Der angegebene Geldbetrag ist zu klein."));
+                    return;
+                }
                 final double finalAmount = amount;
-
                 main.getCoinUserManager().getCoinsUser(target.getUniqueId()).thenAccept(coinUser -> {
-                    coinUser.addCoins(finalAmount);
-                    main.getCoinUserManager().saveCoinsUser(coinUser);
-                    target.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Dir wurden §b" + finalAmount + "€ §7hinzugefügt."));
-                    player.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Du hast §b" + target.getName() + " " + finalAmount + "€ §7hinzugefügt."));
+                    coinUser.addCoins(finalAmount).thenAccept(bool -> {
+                        if(!bool) return;
+                        main.getCoinUserManager().saveCoinsUser(coinUser);
+                        target.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Dir wurden §b" + finalAmount + "€ §7hinzugefügt."));
+                        player.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Du hast §b" + target.getName() + " " + finalAmount + "€ §7hinzugefügt."));
+                    });
                 });
             } else
                 player.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Bitte benutze: /addmoney <Spieler> <Betrag>"));

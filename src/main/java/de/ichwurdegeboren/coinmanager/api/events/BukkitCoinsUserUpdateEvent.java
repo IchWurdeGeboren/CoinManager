@@ -3,11 +3,12 @@ package de.ichwurdegeboren.coinmanager.api.events;
 import de.ichwurdegeboren.coinmanager.api.ChangeCause;
 import de.ichwurdegeboren.coinmanager.api.ICoinsUser;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class BukkitCoinsUserUpdateEvent extends Event {
+public class BukkitCoinsUserUpdateEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS_LIST = new HandlerList();
 
@@ -19,6 +20,10 @@ public class BukkitCoinsUserUpdateEvent extends Event {
     private double oldAmount;
     @Getter
     private ChangeCause changeCause;
+
+    @Getter
+    @Setter
+    private boolean cancelled = false;
 
     public ICoinsUser getCoinsUser() {
         return this.coinsUser;

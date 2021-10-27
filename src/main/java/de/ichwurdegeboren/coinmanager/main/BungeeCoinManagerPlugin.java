@@ -19,6 +19,8 @@ import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Getter
 public class BungeeCoinManagerPlugin extends Plugin implements Main {
@@ -75,8 +77,9 @@ public class BungeeCoinManagerPlugin extends Plugin implements Main {
     }
 
     @Override
-    public void callCoinsUpdateEvent(ICoinsUser iCoinsUser, double newAmount, double oldAmount, ChangeCause changeCause) {
+    public Future<Boolean> callCoinsUpdateEvent(ICoinsUser iCoinsUser, double newAmount, double oldAmount, ChangeCause changeCause) {
         BungeeCoinsUserUpdateEvent event = new BungeeCoinsUserUpdateEvent(iCoinsUser, newAmount, oldAmount, changeCause);
         getProxy().getPluginManager().callEvent(event);
+        return Executors.newSingleThreadExecutor().submit(() -> event.isCancelled());
     }
 }

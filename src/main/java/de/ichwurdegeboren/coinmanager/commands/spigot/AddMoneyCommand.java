@@ -1,6 +1,7 @@
 package de.ichwurdegeboren.coinmanager.commands.spigot;
 
 import de.ichwurdegeboren.coinmanager.main.Main;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -44,13 +45,18 @@ public class AddMoneyCommand implements CommandExecutor {
                     player.sendMessage(main.getPrefix() + "Bitte gib nur positive Geldbeträge an.");
                     return false;
                 }
+                if(amount < 0.01) {
+                    player.sendMessage(main.getPrefix() + "Der angegebene Geldbetrag ist zu klein.");
+                    return false;
+                }
                 final double finalAmount = amount;
-
                 main.getCoinUserManager().getCoinsUser(target.getUniqueId()).thenAccept(coinUser -> {
-                    coinUser.addCoins(finalAmount);
-                    main.getCoinUserManager().saveCoinsUser(coinUser);
-                    target.sendMessage(main.getPrefix() + "Dir wurden §b" + finalAmount + "€ §7hinzugefügt.");
-                    player.sendMessage(main.getPrefix() + "Du hast §b" + target.getName() + " " + finalAmount + "€ §7hinzugefügt.");
+                    coinUser.addCoins(finalAmount).thenAccept(bool -> {
+                        if(!bool) return;
+                        main.getCoinUserManager().saveCoinsUser(coinUser);
+                        target.sendMessage(main.getPrefix() + "Dir wurden §b" + finalAmount + "€ §7hinzugefügt.");
+                        player.sendMessage(main.getPrefix() + "Du hast §b" + target.getName() + " " + finalAmount + "€ §7hinzugefügt.");
+                    });
                 });
             } else
                 player.sendMessage(main.getPrefix() + "Bitte benutze: /addmoney <Spieler> <Betrag>");

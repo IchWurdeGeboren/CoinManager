@@ -36,6 +36,10 @@ public class PayCommand extends Command {
                 player.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Bitte gib nur positive Geldbeträge an."));
                 return;
             }
+            if(amount < 0.01) {
+                player.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Der angegebene Geldbetrag ist zu klein."));
+                return;
+            }
             final double finalAmount = amount;
 
             if (args[1].equalsIgnoreCase("*")) {
@@ -48,10 +52,12 @@ public class PayCommand extends Command {
                     for (ProxiedPlayer target : ProxyServer.getInstance().getPlayers())
                         if (target != player)
                             main.getCoinUserManager().getCoinsUser(target.getUniqueId()).thenAccept(targetCoinsUser -> {
-                                targetCoinsUser.addCoins(finalAmount);
-                                main.getCoinUserManager().saveCoinsUser(targetCoinsUser);
-                                player.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Du hast §b" + target.getName() + " " + finalAmount + "€ §7gegeben."));
-                                target.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Du hast von §b" + player.getName() + " " + finalAmount + "€ §7erhalten."));
+                                targetCoinsUser.addCoins(finalAmount).thenAccept(bool -> {
+                                    if(!bool) return;
+                                    main.getCoinUserManager().saveCoinsUser(targetCoinsUser);
+                                    player.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Du hast §b" + target.getName() + " " + finalAmount + "€ §7gegeben."));
+                                    target.sendMessage(TextComponent.fromLegacyText(main.getPrefix() + "Du hast von §b" + player.getName() + " " + finalAmount + "€ §7erhalten."));
+                                });
                             });
                     main.getCoinUserManager().saveCoinsUser(coinsUser);
                 });

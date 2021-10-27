@@ -30,7 +30,7 @@ public class CoinUserManager implements ICoinsManager {
             ResultSet rs = main.getMySQL().query("SELECT * FROM " + main.getConfigObject().getTablePrefix() + "coins WHERE UUID = '" + uuid.toString() + "'");
             try {
                 if (rs.next())
-                    return new CoinUser(main, uuid, rs.getLong("COINS"));
+                    return new CoinUser(main, uuid, rs.getDouble("COINS"));
                 rs.close();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -45,8 +45,8 @@ public class CoinUserManager implements ICoinsManager {
             try {
                 PreparedStatement ps = main.getMySQL().getCon().prepareStatement("INSERT INTO " + main.getConfigObject().getTablePrefix() + "coins VALUES (?, ?) ON DUPLICATE KEY UPDATE COINS=?;");
                 ps.setString(1, iCoinsUser.getUUID().toString());
-                ps.setDouble(2, iCoinsUser.getCoins());
-                ps.setDouble(3, iCoinsUser.getCoins());
+                ps.setDouble(2, Math.round(iCoinsUser.getCoins() * 100));
+                ps.setDouble(3, Math.round(iCoinsUser.getCoins() * 100));
                 ps.execute();
                 ps.close();
             } catch (SQLException e) {
@@ -63,7 +63,7 @@ public class CoinUserManager implements ICoinsManager {
                 ps.setString(1, uuid.toString());
                 ResultSet rs = ps.executeQuery();
                 if (rs.next())
-                    return new CoinUser(main, uuid, rs.getLong("COINS"));
+                    return new CoinUser(main, uuid, rs.getDouble("COINS"));
                 ps.close();
             } catch (SQLException e) {
                 e.printStackTrace();

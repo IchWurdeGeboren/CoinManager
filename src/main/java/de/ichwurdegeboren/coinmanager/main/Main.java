@@ -6,6 +6,7 @@ import de.ichwurdegeboren.coinmanager.manager.CoinUserManager;
 import de.ichwurdegeboren.coinmanager.utils.ConfigObject;
 import de.ichwurdegeboren.coinmanager.utils.MySQL;
 
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 public interface Main {
@@ -20,5 +21,5 @@ public interface Main {
 
     ConfigObject getConfigObject();
 
-    void callCoinsUpdateEvent(ICoinsUser iCoinsUser, double newAmount, double oldAmount, ChangeCause changeCause);
+    Future<Boolean> callCoinsUpdateEvent(ICoinsUser iCoinsUser, double newAmount, double oldAmount, ChangeCause changeCause);
 }

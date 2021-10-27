@@ -40,13 +40,20 @@ public class SetMoneyCommand implements CommandExecutor {
                     player.sendMessage(main.getPrefix() + "Bitte benutze: /setmoney <Spieler> <Betrag>");
                     return false;
                 }
+
+                if (amount < 0.01 && amount != 0) {
+                    player.sendMessage(main.getPrefix() + "Der angegebene Geldbetrag ist zu klein.");
+                    return false;
+                }
                 final double finalAmount = amount;
 
                 main.getCoinUserManager().getCoinsUser(target.getUniqueId()).thenAccept(coinUser -> {
-                    coinUser.setCoins(finalAmount);
-                    main.getCoinUserManager().saveCoinsUser(coinUser);
-                    target.sendMessage(main.getPrefix() + "Dir wurden §b" + finalAmount + "€ §7gesetzt.");
-                    player.sendMessage(main.getPrefix() + "Du hast §b" + target.getName() + " " + finalAmount + "€ §7gesetzt.");
+                    coinUser.setCoins(finalAmount).thenAccept(bool -> {
+                        if (!bool) return;
+                        main.getCoinUserManager().saveCoinsUser(coinUser);
+                        target.sendMessage(main.getPrefix() + "Dir wurden §b" + finalAmount + "€ §7gesetzt.");
+                        player.sendMessage(main.getPrefix() + "Du hast §b" + target.getName() + " " + finalAmount + "€ §7gesetzt.");
+                    });
                 });
             } else
                 player.sendMessage(main.getPrefix() + "Bitte benutze: /setmoney <Spieler> <Betrag>");

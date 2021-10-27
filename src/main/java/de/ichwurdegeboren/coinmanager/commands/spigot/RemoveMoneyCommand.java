@@ -44,13 +44,19 @@ public class RemoveMoneyCommand implements CommandExecutor {
                     player.sendMessage(main.getPrefix() + "Bitte gib nur positive Geldbeträge an.");
                     return false;
                 }
+                if(amount < 0.01) {
+                    player.sendMessage(main.getPrefix() + "Der angegebene Geldbetrag ist zu klein.");
+                    return false;
+                }
                 final double finalAmount = amount;
 
                 main.getCoinUserManager().getCoinsUser(target.getUniqueId()).thenAccept(coinUser -> {
-                    coinUser.removeCoins(finalAmount);
-                    main.getCoinUserManager().saveCoinsUser(coinUser);
-                    target.sendMessage(main.getPrefix() + "Dir wurden §b" + finalAmount + "€ §7abgezogen.");
-                    player.sendMessage(main.getPrefix() + "Du hast §b" + target.getName() + " " + finalAmount + "€ §7abgezogen.");
+                    coinUser.removeCoins(finalAmount).thenAccept(bool -> {
+                        if(!bool) return;
+                        main.getCoinUserManager().saveCoinsUser(coinUser);
+                        target.sendMessage(main.getPrefix() + "Dir wurden §b" + finalAmount + "€ §7abgezogen.");
+                        player.sendMessage(main.getPrefix() + "Du hast §b" + target.getName() + " " + finalAmount + "€ §7abgezogen.");
+                    });
                 });
             } else
                 player.sendMessage(main.getPrefix() + "Bitte benutze: /removemoney <Spieler> <Betrag>");

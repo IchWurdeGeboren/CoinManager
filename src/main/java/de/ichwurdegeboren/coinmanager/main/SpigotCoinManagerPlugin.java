@@ -19,6 +19,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 @Getter
 public class SpigotCoinManagerPlugin extends JavaPlugin implements Main {
@@ -75,11 +76,11 @@ public class SpigotCoinManagerPlugin extends JavaPlugin implements Main {
     }
 
     @Override
-    public void callCoinsUpdateEvent(ICoinsUser iCoinsUser, double newAmount, double oldAmount, ChangeCause changeCause) {
+    public Future<Boolean> callCoinsUpdateEvent(ICoinsUser iCoinsUser, double newAmount, double oldAmount, ChangeCause changeCause) {
         BukkitCoinsUserUpdateEvent event = new BukkitCoinsUserUpdateEvent(iCoinsUser, newAmount, oldAmount, changeCause);
-        getServer().getScheduler().callSyncMethod(this, () -> {
+        return getServer().getScheduler().callSyncMethod(this, () -> {
             getServer().getPluginManager().callEvent(event);
-            return null;
+            return event.isCancelled();
         });
     }
 }
